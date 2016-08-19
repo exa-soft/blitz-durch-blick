@@ -5,87 +5,78 @@ var BDB  = (function () {
   var privateEigenschaft = "privat";
 
 // TODO zusammenfassen in elem-Objekt (assoziatives Array)
-  var elemRndNum;
-  var elemIntro;
-  var elemGame;
-  var elemSettings;
-  var elemBtnSolve;
+  var elem = {
+    rndNum: null,
+    intro: null,
+    game: null,
+    settings: null,
+    btnSolve: null,
+  }
 
-// TODO zusammenfassen in Settings-Objekt (assoziatives Array)
-  var gameType = 0;
-  var numberLength = 3;
-  var amount = 3;   // how many different numbers or images
-  var showRepeats = 3;    // how many times show each number or image
-  var showMs = 150;
-  var hideMs = 750;
-  // var text = "357";
+  var settings = {
+    gameType: 0,
+    numberLength: 3,
+    amount: 3,         // how many different numbers or images
+    showRepeats: 3,    // how many times show each number or image
+    showMs: 150,
+    hideMs: 750,
+    //text: "357",
+  }
 
-// TODO zusammenfassen in toDisplay-Objekt (assoziatives Array)
-  var toDisplay;
-  var toDisplayIndex = 0;
+  var status = {
+    toDisplay: null,
+    toDisplayIndex: -1,               // current image to display (count up)
+    curRepeat: settings.showRepeats   // countdown how many times to display
+  }
 
-  var curRepeat = showRepeats;
 
   function getValues ()
   {
     //window.alert("getValues wurde aufgerufen");
 
     // TODO parse value for game type (now only 0, hardcoded)
-    gameType = 0;
-    numberLength = parseInt(document.getElementById("numLen").value);
-
-    amount = parseInt(document.getElementById("amount").value);
-    showRepeats = parseInt(document.getElementById("repeat").value);
-    showMs = parseInt(document.getElementById("showtime").value);
-    hideMs = parseInt(document.getElementById("hidetime").value);
-
-    //window.alert("getValues: amount=" + amount + ", showRepeats=" + showRepeats
-    //  + ", show for " + showMs + "ms, hide for " + hideMs + "ms");
-
+    settings.gameType = 0;
+    settings.numberLength = parseInt(document.getElementById("numLen").value);
+    settings.amount = parseInt(document.getElementById("amount").value);
+    settings.showRepeats = parseInt(document.getElementById("repeat").value);
+    settings.showMs = parseInt(document.getElementById("showtime").value);
+    settings.hideMs = parseInt(document.getElementById("hidetime").value);
   }
 
+  /** Switches display and memory to next image (but does not set any timeouts). */
   function displayNext ()
   {
-    window.alert("displayNext wurde aufgerufen (index=" + toDisplayIndex + ")");
-    curRepeat = showRepeats;
-    toDisplay[toDisplayIndex].displayMe (elemRndNum);
-    //elemRndNum.innerHTML = text;
-
-    blink();
+    status.curRepeat = settings.showRepeats - 1;
+    status.toDisplayIndex = status.toDisplayIndex + 1;
+    status.toDisplay[status.toDisplayIndex].displayMe (elem.rndNum);
+    window.alert("displayNext " + getRepeatStatusString());
   }
 
+  /** Manages the timeouts to show and hide the numbers or images. */
   function blink ()
   {
-    //window.alert("blink wurde aufgerufen, amount is " + amount + ", showRepeats is " + showRepeats);
-    elemRndNum.style.visibility = "hidden";
+    elem.rndNum.style.visibility = "hidden";
 
-    curRepeat = curRepeat - 1;
-    var t1 = setTimeout(showNumberOn, hideMs);
-    if (curRepeat > 0)
+    var t1 = setTimeout(showNumberOn, settings.hideMs);
+    var t2Time = settings.hideMs + settings.showMs;
+    if (status.curRepeat > 0)
     {
-      //window.alert("curRepeat=" + curRepeat + ", set BDB.blink timeout to " + (hideMs + showMs));
-      var t2 = setTimeout(blink, hideMs + showMs);
+      //window.alert("blink " + getRepeatStatusString() + ": same image, set BDB.blink timeout to " + (t2Time));
+      status.curRepeat = status.curRepeat - 1;
+      var t2 = setTimeout(blink, t2Time);
     }
-    else
+    else if (status.toDisplayIndex < settings.amount)
     {
-      // Wechsel zum nächsten Bild sofern curRepeat == 0
-      toDisplayIndex = toDisplayIndex + 1;
-      if (toDisplayIndex == amount)
-      {
-        // this was the last image, only hide it
-        // TODO nur showNumberOff statt blink wenn auch amount auf 0 ist
-        //window.alert("showRepeats=" + showRepeats + ", set showNumberOff timeout to " + (hideMs + showMs));
-        var t2 = setTimeout(showNumberOff, hideMs + showMs);
-      }
-      else
-      {
-        // there are more images, switch to the next one
-        // TODO nur showNumberOff statt blink wenn auch amount auf 0 ist
-        //window.alert("showRepeats=" + showRepeats + ", set showNumberOff timeout to " + (hideMs + showMs));
-        displayNext
-        // var t2 = setTimeout(blink, hideMs + showMs);
-      }
-
+      // status.curRepeat == 0 ==> switch to next image
+      // status.toDisplayIndex < settings.amount ==> there is a next image
+      //window.alert("blink " +  + getRepeatStatusString() + ": next image! call displayNext");
+      displayNext ()
+      var t2 = setTimeout(blink, t2Time);
+    }
+    else {
+      // this was the last repeat of the last image, only hide it
+      //window.alert("blink "  + getRepeatStatusString() + ": last repeat of last image! set showNumberOff timeout to " + t2Time);
+      var t2 = setTimeout(showNumberOff, t2Time);
     }
 
   }
@@ -93,82 +84,92 @@ var BDB  = (function () {
   function showNumberOn ()
   {
     //window.alert("showNumberOn wurde aufgerufen");
-    elemRndNum.style.visibility = "visible";
+    elem.rndNum.style.visibility = "visible";
   }
 
   function showNumberOff ()
   {
     //window.alert("showNumberOff wurde aufgerufen");
-    elemRndNum.style.visibility = "hidden";
+    elem.rndNum.style.visibility = "hidden";
 
     if (showRepeats == 0 && amount == 0)
     {
       // finished -> enable solution button
-      elemBtnSolve.removeAttribute('disabled');
+      elem.btnSolve.removeAttribute('disabled');
     }
   }
 
+  function getRepeatStatusString () {
+    return "image: " + status.toDisplayIndex + "/" + settings.amount
+      + ", rep: " + status.curRepeat + "/" + settings.showRepeats;
+  }
 
   // Direkt das Object mit der öffentlichen Schnittstelle zurückgeben
   return {
 
-    init : function ()
+    init: function ()
     {
       //window.alert("init wurde aufgerufen");
+      elem.rndNum = document.getElementById("rndNum");
+      elem.intro = document.getElementById("intro");
+      elem.game = document.getElementById("game");
+      elem.settings = document.getElementById("settings");
 
-      elemRndNum = document.getElementById("rndNum");
-      elemIntro = document.getElementById("intro");
-      elemGame = document.getElementById("game");
-      elemSettings = document.getElementById("settings");
-
-      elemBtnSolve = document.getElementById("solveGame");
+      elem.btnSolve = document.getElementById("solveGame");
 
       //document.getElementById("startGame").onclick = BDB.displayNumber();
       return null;
     },
 
-    startGame : function ()
+    startGame: function ()
     {
       getValues ();
 
+      //window.alert ("Settings: numberLength=" + settings.numberLength
+      //  + ", amount=" + settings.amount + ", showRepeats=" + settings.showRepeats
+      //  + ", showMs=" + settings.showMs + ", hideMs=" + settings.hideMs);
+
       // get data and init loops
-      toDisplay = BDBdata.initData (gameType, showRepeats, numberLength);
-      toDisplayIndex = 0;
+      status.toDisplay = BDBdata.initData (settings.gameType, settings.amount, settings.numberLength);
+      status.toDisplayIndex = -1;   // because we will call displayNext to start
 
       // switch screen and start displaying
       BDB.displayGameOnly ();
-      elemRndNum.style.display = "block";
-      elemBtnSolve.setAttribute('disabled','disabled');
+      elem.rndNum.style.display = "block";
+      elem.btnSolve.setAttribute('disabled','disabled');
 
+      window.alert ("before displayNext: " + getRepeatStatusString());
       displayNext ();
+      window.alert ("before displayNext: " + getRepeatStatusString());
+      blink ();
     },
 
-    solveGame : function ()
+    solveGame: function ()
     {
       // TODO display shown values
 
       BDB.displayGameOnly ();
     },
 
-    displayIntroOnly : function ()
+    displayIntroOnly: function ()
     {
-      elemIntro.style.display = "block";
-      elemSettings.style.display = "none";
-      elemGame.style.display = "none";
+      elem.intro.style.display = "block";
+      elem.settings.style.display = "none";
+      elem.game.style.display = "none";
     },
 
-    displaySettingsOnly : function ()
+    displaySettingsOnly: function ()
     {
-      elemIntro.style.display = "none";
-      elemSettings.style.display = "block";
-      elemGame.style.display = "none";
+      elem.intro.style.display = "none";
+      elem.settings.style.display = "block";
+      elem.game.style.display = "none";
     },
 
-    displayGameOnly : function ()
+    displayGameOnly: function ()
     {
-      elemIntro.style.display = "none";
-      elemSettings.style.display = "none";
-      elemGame.style.display = "block";
+      elem.intro.style.display = "none";
+      elem.settings.style.display = "none";
+      elem.game.style.display = "block";
     },
 
 
