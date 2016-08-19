@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--[if lt IE 9]>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <![endif]-->
+
+  <title>BlitzDurchBlick - trainiere blitzschnelles optisches Erfassen</title>
+  <link rel="stylesheet" href="styles-0.4.css" type="text/css" />
+  <!--
+    <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon">
+    <link rel="help" title="Hilfe" href="help.htm">
+    <link rel="top" title="SELFHTML" href="displaytest4.htm">
+  -->
+  <link rel="author" title="Author: Edith Birrer" href="http://www.edith-birrer.ch">
+  <script type="text/javascript" src="blitzdurchblick-0.4.js"></script>
+  <script type="text/javascript" src="blitzdurchdata-0.4.js"></script>
+
+</head>
+<body>
+
+  <header>
+    <img src="logo.svg" alt="logo">
+    <h1>BlitzDurchBlick</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#" onClick="BDB.displayIntroOnly()">Einführung</a></li>
+      <li><a href="#" onClick="BDB.displaySettingsOnly()">Einstellungen</a></li>
+      <li><a href="#" onClick="BDB.displayGameOnly()">Spielfläche</a></li>
+    </ul>
+    <button type="button" id="startGame" onclick="BDB.startGame()">Spiel starten</button>
+    <button type="button" id="solveGame" onclick="BDB.solveGame()" disabled>Lösung zeigen</button>
+  </nav>
+
+  <main>
+    <article id="intro">
+      <h2>Einführung</h2>
+      <p>
+        Diese Seite hilft dir, deine Augen schneller zu machen. Wenn du etwas schneller erfassen kannst,
+        ist es auch weniger anstrengend. Du siehst also mehr und einfacher!
+      </p>
+      <p>
+        Das Spiel wird dir für kurze Augenglicke Zahlen oder Bilder zeigen, die du dir merken sollst und
+        danach aufschreiben.
+        In den Einstellungen kannst du angeben, wieviele verschiedene Zahlen oder Bilder gezeigt werden sollen,
+        wie oft und wie lange sie angezeigt sein sollen und wie lange die Pausen dazwischen sein sollen.
+      </p>
+      <p>
+        Am Ende kannst du dir die gezeigten Zahlen oder Bilder nochmals in Ruhe ansehen. So kannst du
+        kontrollieren, ob du schon schnell genug den Durchblick hast!
+      </p>
+    </article>
+
+    <article id="game" style="display:none">
+      <h2>Spielfläche</h2>
+      <div id="rndNum">
+        135
+      </div>
+    </article>
+
+    <article id="settings" style="display:none">
+      <h2>Einstellungen</h2>
+      <form action="#"
+        oninput="repeatOut.value=parseInt(repeat.value);
+        numLenOut.value=parseInt(numLen.value);
+        amountOut.value=parseInt(amount.value); "
+      >
+        <fieldset>
+          <legend>Typ des Spiels</legend>
+          <ul>
+            <li>
+              <input type="radio" id="typeNumBlack" name="gameType" value="numbersBlack" checked="checked">
+              <label for="typeNumBlack">schwarze Zahlen</label>
+            </li>
+            <li>
+              <input type="radio" id="typeNumColor" name="gameType" value="numbersColor" disabled="disabled">
+              <label for="typeNumColor" disabled="disabled">farbige Zahlen</label>
+            </li>
+            <li>
+              <input type="radio" id="typeImages" name="gameType" value="images" disabled="disabled">
+              <label for="typeImages" disabled="disabled">Bilder</label>
+            </li>
+          </ul>
+          <ul id="optForNum">
+            <li>
+              <label for="numLen">Länge der Zahlen</label>
+              <input id="numLen" name="numLen" type="range" min="1" max="9" step="1" value="3">
+              <output name="numLenOut" for="numLen">3</output>
+            </li>
+          </ul>
+        </fieldset>
+
+        <fieldset>
+          <legend>Schwierigkeit</legend>
+          <ul>
+            <li>
+              <label for="amount">Menge (verschiedene Zahlen/Bilder)</label>
+              <input id="amount" name="amount" type="range" min="1" max="15" step="1" value="2">
+              <output name="amountOut" for="amount">2</output>
+            </li>
+            <li>
+              <label for="repeat">Anzahl Wiederholungen</label>
+              <input id="repeat" name="repeat" type="range" min="1" max="9" step="1" value="3">
+              <output name="repeatOut" for="repeat">3</output>
+            </li>
+            <li>
+              <label for="showtime">anzeigen für (Millisekunden)</label>
+              <input id="showtime" name="showtime" type="number" min="10" max="10000" value="550">
+            </li>
+            <li>
+              <label for="hidetime">verstecken für (Millisekunden)</label>
+              <input id="hidetime" name="hidetime" type="number" min="10" max="5000" value="850">
+            </li>
+          </ul>
+        </fieldset>
+
+      </form>
+
+    </article>
+
+    <!--
+    <aside>
+      <section>
+      </section>
+    </aside>
+    -->
+  </main>
+
+  <footer>
+    <!-- <a href="kontakt.html">Kontakt</a> -->
+    <p>© 2016 by <a href="http://www.edith-birrer.ch">Edith Birrer</a></p>
+  </footer>
+
+  <noscript>
+    <h1>BlitzDurchBlick kann nicht benutzt werden</h1>
+    <p>In Ihrem Browser ist JavaScript deaktiviert.</p>
+    <p>Diese Seite benutzt JavaScript zur Darstellung der Zahlen und Bilder, wie in der <a href="help.htm">Hilfe</a> beschrieben. Ohne JavaScript ist sie nicht nutzbar.</p>
+    <p>Im SELFHTML-Wiki erfahren Sie, <a href="https://wiki.selfhtml.org/wiki/JavaScript/Tutorials/JavaScript_aktivieren"> wie Sie JavaScript in Ihrem Browser aktivieren können. </a> </p>
+  </noscript>
+
+  <script>
+    //BDB.öffentlicheMethode1();
+    BDB.init();
+  </script>
+
+</body>
+</html>

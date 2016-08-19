@@ -1,0 +1,9 @@
+JSFiddle:
+https://jsfiddle.net/Bie_iHL/p8qLj5s5/
+
+
+Timing und sonst JavaScript:
+http://www.w3schools.com/js/js_timing.asp
+
+Stackoverflow:
+http://stackoverflow.com/questions/12742034/show-images-one-after-one-after-some-interval-of-time
