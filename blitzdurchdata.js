@@ -106,7 +106,17 @@ var BDBdata  = (function () {
       }
       else
         elem.innerHTML = "ERROR: dataObjArray is not an array ('" + dataObjArray + "')";
-    }
+    },
+
+    /** return a position object (x, y) with Strings (like "50px") */
+    getRandomPosition: function ()
+    {
+      var pos = {
+        x: (rndInt (0, 300)).toString() + "px",
+        y: (rndInt (0, 400)).toString() + "px"
+      }
+      return pos;
+    },
 
   };
 })();

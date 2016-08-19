@@ -8,7 +8,7 @@
   <![endif]-->
 
   <title>BlitzDurchBlick - trainiere blitzschnelles optisches Erfassen</title>
-  <link rel="stylesheet" href="styles-0.4.css" type="text/css" />
+  <link rel="stylesheet" href="styles-0.5.css" type="text/css" />
   <!--
     <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon">
     <link rel="help" title="Hilfe" href="help.htm">
@@ -56,7 +56,7 @@
     </article>
 
     <article id="game" style="display:none">
-      <h2>Spielfläche</h2>
+      <!--<h2>Spielfläche</h2>-->
       <div id="rndNum">
         135
       </div>
@@ -103,9 +103,17 @@
               <output name="amountOut" for="amount">2</output>
             </li>
             <li>
+              <label for="amountChangeLoc">wechselnde Position</label>
+              <input type="checkbox" id="dispChangeLoc" name="amountChangeLoc" value="move">
+            </li>
+            <li>
               <label for="repeat">Anzahl Wiederholungen</label>
               <input id="repeat" name="repeat" type="range" min="1" max="9" step="1" value="3">
               <output name="repeatOut" for="repeat">3</output>
+            </li>
+            <li>
+              <label for="repeatChangeLoc" disabled="disabled">wechselnde Position für jede Wiederholung</label>
+              <input type="checkbox" id="repeatChangeLoc" name="repeatChangeLoc" value="move" disabled="disabled">
             </li>
             <li>
               <label for="showtime">anzeigen für (Millisekunden)</label>
@@ -132,7 +140,10 @@
 
   <footer>
     <!-- <a href="kontakt.html">Kontakt</a> -->
-    <p>© 2016 by <a href="http://www.edith-birrer.ch">Edith Birrer</a></p>
+    <p>© 2016 by <a href="http://www.edith-birrer.ch">Edith Birrer</a> &mdash; <a href="#" onClick="BDB.toggleImpressum()">Impressum</a></p>
+    <div id="impressum">
+      <p>Nach einer Idee von ...</p>
+    </div>
   </footer>
 
   <noscript>
