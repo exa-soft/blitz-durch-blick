@@ -97,15 +97,12 @@ var BDB  = (function () {
 
     init: function ()
     {
-      //window.alert("init wurde aufgerufen");
       elem.rndNum = document.getElementById("rndNum");
       elem.intro = document.getElementById("intro");
       elem.game = document.getElementById("game");
       elem.settings = document.getElementById("settings");
 
       elem.btnSolve = document.getElementById("solveGame");
-
-      //document.getElementById("startGame").onclick = BDB.displayNumber();
       return null;
     },
 
@@ -120,6 +117,7 @@ var BDB  = (function () {
       // switch screen
       BDB.displayGameOnly ();
       elem.rndNum.style.display = "block";
+      elem.rndNum.style.visibility = "visible";
       elem.btnSolve.setAttribute('disabled','disabled');
 
       // start displaying
@@ -134,9 +132,9 @@ var BDB  = (function () {
 
     solveGame: function ()
     {
-      // TODO display shown values
-
       BDB.displayGameOnly ();
+      BDBdata.displayInElement (elem.rndNum, status.toDisplay);
+      showNumberOn ();
     },
 
     displayIntroOnly: function ()

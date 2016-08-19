@@ -18,7 +18,7 @@ var BDBdata  = (function () {
   {
     this.len = length;
     this.text = createRandomDigitString (length);
-    window.alert ("new DispDataNumberBlack: length=" + this.len + ", text=" + this.text);
+    //window.alert ("new DispDataNumberBlack: length=" + this.len + ", text=" + this.text);
   }
 
   /*
@@ -26,6 +26,14 @@ var BDBdata  = (function () {
    */
   DispDataNumberBlack.prototype.displayMe = function (elem) {
     elem.innerHTML = this.text;
+  };
+
+  /*
+   * Get HTML code for this element (to concatenate with more code before
+   * inserting it into some HTML element)
+   */
+  DispDataNumberBlack.prototype.getHTML = function () {
+    return this.text;
   };
 
 
@@ -75,13 +83,29 @@ var BDBdata  = (function () {
 
     initData: function (type, amount, length)
     {
-      window.alert ("will create data for type " + type + ", amount " + amount + ", length " + length);
-      //dataForDisplay = new Array(amount);
+      //window.alert ("will create data for type " + type + ", amount " + amount + ", length " + length);
       dataForDisplay = [];
       for (var i = 0; i < amount; i++) {
         dataForDisplay[i] = createDataObject (type, length);
       }
       return dataForDisplay;
+    },
+
+    displayInElement: function (elem, dataObjArray)
+    {
+      if (dataObjArray.constructor === Array)
+      {
+        var s = "";
+        for (i = 0; i < dataObjArray.length; i++) {
+          tmpString = dataObjArray[i].getHTML();
+          //window.alert ("HTML for object is " + tmpString);
+          s = s + tmpString + "<br />";
+        }
+        //window.alert ("HTML is: " + s);
+        elem.innerHTML = s;
+      }
+      else
+        elem.innerHTML = "ERROR: dataObjArray is not an array ('" + dataObjArray + "')";
     }
 
   };
