@@ -18,7 +18,7 @@ var BDBdata  = (function () {
   {
     this.len = length;
     this.text = createRandomDigitString (length);
-    window.alert ("new Number: length=" + this.len + ", text=" + this.text);
+    window.alert ("new DispDataNumberBlack: length=" + this.len + ", text=" + this.text);
   }
 
   /*
@@ -46,7 +46,6 @@ var BDBdata  = (function () {
       break;
       default:  // black numbers
         return new DispDataNumberBlack (length);
-        alert ("created new DispDataNumberBlack");
       break;
     }
     return null;
@@ -74,10 +73,12 @@ var BDBdata  = (function () {
   // Direkt das Object mit der öffentlichen Schnittstelle zurückgeben
   return {
 
-    initData : function (type, amount, length)
+    initData: function (type, amount, length)
     {
-      dataForDisplay = new Array(amount);
-      for (var i = 0; i < amount; ++i) {
+      window.alert ("will create data for type " + type + ", amount " + amount + ", length " + length);
+      //dataForDisplay = new Array(amount);
+      dataForDisplay = [];
+      for (var i = 0; i < amount; i++) {
         dataForDisplay[i] = createDataObject (type, length);
       }
       return dataForDisplay;
