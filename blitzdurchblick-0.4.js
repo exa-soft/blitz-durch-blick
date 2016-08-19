@@ -4,7 +4,6 @@ var BDB  = (function () {
 
   var privateEigenschaft = "privat";
 
-// TODO zusammenfassen in elem-Objekt (assoziatives Array)
   var elem = {
     rndNum: null,
     intro: null,
@@ -24,16 +23,14 @@ var BDB  = (function () {
   }
 
   var status = {
-    toDisplay: null,
+    toDisplay: null,                  // will contain the objects (numbers/images) to display
     toDisplayIndex: -1,               // current image to display (count up)
     curRepeat: settings.showRepeats   // countdown how many times to display
   }
 
-
+  /** Fills settings object with values from form */
   function getValues ()
   {
-    //window.alert("getValues wurde aufgerufen");
-
     // TODO parse value for game type (now only 0, hardcoded)
     settings.gameType = 0;
     settings.numberLength = parseInt(document.getElementById("numLen").value);
@@ -49,56 +46,47 @@ var BDB  = (function () {
     status.curRepeat = settings.showRepeats - 1;
     status.toDisplayIndex = status.toDisplayIndex + 1;
     status.toDisplay[status.toDisplayIndex].displayMe (elem.rndNum);
-    window.alert("displayNext " + getRepeatStatusString());
   }
 
   /** Manages the timeouts to show and hide the numbers or images. */
   function blink ()
   {
-    elem.rndNum.style.visibility = "hidden";
+    showNumberOff ();
 
-    var t1 = setTimeout(showNumberOn, settings.hideMs);
+    var t1Time = settings.hideMs;
     var t2Time = settings.hideMs + settings.showMs;
     if (status.curRepeat > 0)
     {
-      //window.alert("blink " + getRepeatStatusString() + ": same image, set BDB.blink timeout to " + (t2Time));
       status.curRepeat = status.curRepeat - 1;
+      var t1 = setTimeout(showNumberOn, t1Time);
       var t2 = setTimeout(blink, t2Time);
     }
-    else if (status.toDisplayIndex < settings.amount)
+    else if (status.toDisplayIndex < settings.amount - 1)
     {
       // status.curRepeat == 0 ==> switch to next image
       // status.toDisplayIndex < settings.amount ==> there is a next image
-      //window.alert("blink " +  + getRepeatStatusString() + ": next image! call displayNext");
-      displayNext ()
+      displayNext ();
+      var t1 = setTimeout(showNumberOn, t1Time);
       var t2 = setTimeout(blink, t2Time);
     }
     else {
-      // this was the last repeat of the last image, only hide it
-      //window.alert("blink "  + getRepeatStatusString() + ": last repeat of last image! set showNumberOff timeout to " + t2Time);
-      var t2 = setTimeout(showNumberOff, t2Time);
+      // this was the last repeat of the last image, nothing more to display
+      // enable solution button
+      elem.btnSolve.removeAttribute('disabled');
     }
-
   }
 
   function showNumberOn ()
   {
-    //window.alert("showNumberOn wurde aufgerufen");
     elem.rndNum.style.visibility = "visible";
   }
 
   function showNumberOff ()
   {
-    //window.alert("showNumberOff wurde aufgerufen");
     elem.rndNum.style.visibility = "hidden";
-
-    if (showRepeats == 0 && amount == 0)
-    {
-      // finished -> enable solution button
-      elem.btnSolve.removeAttribute('disabled');
-    }
   }
 
+  /** debug function */
   function getRepeatStatusString () {
     return "image: " + status.toDisplayIndex + "/" + settings.amount
       + ", rep: " + status.curRepeat + "/" + settings.showRepeats;
@@ -125,22 +113,22 @@ var BDB  = (function () {
     {
       getValues ();
 
-      //window.alert ("Settings: numberLength=" + settings.numberLength
-      //  + ", amount=" + settings.amount + ", showRepeats=" + settings.showRepeats
-      //  + ", showMs=" + settings.showMs + ", hideMs=" + settings.hideMs);
-
       // get data and init loops
       status.toDisplay = BDBdata.initData (settings.gameType, settings.amount, settings.numberLength);
       status.toDisplayIndex = -1;   // because we will call displayNext to start
 
-      // switch screen and start displaying
+      // switch screen
       BDB.displayGameOnly ();
       elem.rndNum.style.display = "block";
       elem.btnSolve.setAttribute('disabled','disabled');
 
-      window.alert ("before displayNext: " + getRepeatStatusString());
+      // start displaying
       displayNext ();
-      window.alert ("before displayNext: " + getRepeatStatusString());
+      // The repetition counter in the blink method assumes that currently
+      // an image is being displayed. As this is not the case just now,
+      // the first image would be displayed one repetition short.
+      // So to force one more repetition, we increase curRepeat:
+      status.curRepeat = status.curRepeat + 1;
       blink ();
     },
 
