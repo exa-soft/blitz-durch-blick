@@ -10,6 +10,7 @@ var BDB  = (function () {
     game: null,
     settings: null,
     btnSolve: null,
+    impressum: null,
   }
 
   var settings = {
@@ -17,15 +18,17 @@ var BDB  = (function () {
     numberLength: 3,
     amount: 3,         // how many different numbers or images
     showRepeats: 3,    // how many times show each number or image
+    objMove: false,    // changing position for each object
+    repMove: false,    // changing position for each repetition
     showMs: 150,
     hideMs: 750,
-    //text: "357",
   }
 
   var status = {
     toDisplay: null,                  // will contain the objects (numbers/images) to display
     toDisplayIndex: -1,               // current image to display (count up)
-    curRepeat: settings.showRepeats   // countdown how many times to display
+    curRepeat: settings.showRepeats,   // countdown how many times to display
+    imprOn: false,
   }
 
   /** Fills settings object with values from form */
@@ -38,11 +41,21 @@ var BDB  = (function () {
     settings.showRepeats = parseInt(document.getElementById("repeat").value);
     settings.showMs = parseInt(document.getElementById("showtime").value);
     settings.hideMs = parseInt(document.getElementById("hidetime").value);
+
+    settings.objMove = document.getElementById("dispChangeLoc").checked;
+    settings.repMove = document.getElementById("repeatChangeLoc").checked;
   }
 
   /** Switches display and memory to next image (but does not set any timeouts). */
   function displayNext ()
   {
+    if (settings.objMove) {
+      // move next number/image to new position
+      var pos = BDBdata.getRandomPosition ();
+      //window.alert ("randomPosition: x=" + pos.x + ", y=" + pos.y);
+      setNumberPosition (pos.x, pos.y);
+    }
+
     status.curRepeat = settings.showRepeats - 1;
     status.toDisplayIndex = status.toDisplayIndex + 1;
     status.toDisplay[status.toDisplayIndex].displayMe (elem.rndNum);
@@ -52,6 +65,8 @@ var BDB  = (function () {
   function blink ()
   {
     showNumberOff ();
+
+    // TODO work with settings.repMove ==> set new position
 
     var t1Time = settings.hideMs;
     var t2Time = settings.hideMs + settings.showMs;
@@ -86,6 +101,12 @@ var BDB  = (function () {
     elem.rndNum.style.visibility = "hidden";
   }
 
+  /** set position of number (left and top are Strings like "50px") */
+  function setNumberPosition (left, top) {
+    elem.rndNum.style.left = left;
+    elem.rndNum.style.top = top;
+  }
+
   /** debug function */
   function getRepeatStatusString () {
     return "image: " + status.toDisplayIndex + "/" + settings.amount
@@ -103,6 +124,10 @@ var BDB  = (function () {
       elem.settings = document.getElementById("settings");
 
       elem.btnSolve = document.getElementById("solveGame");
+      elem.impressum = document.getElementById("impressum");
+
+      status.imprOn = false;
+
       return null;
     },
 
@@ -133,6 +158,7 @@ var BDB  = (function () {
     solveGame: function ()
     {
       BDB.displayGameOnly ();
+      setNumberPosition ("10px", "10px");
       BDBdata.displayInElement (elem.rndNum, status.toDisplay);
       showNumberOn ();
     },
@@ -158,6 +184,14 @@ var BDB  = (function () {
       elem.game.style.display = "block";
     },
 
+    toggleImpressum: function ()
+    {
+      if (status.imprOn)
+        elem.impressum.style.display = "none";
+      else
+        elem.impressum.style.display = "block";
+      status.imprOn = !(status.imprOn);
+    },
 
   };
 })();

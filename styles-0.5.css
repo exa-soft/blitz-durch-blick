@@ -61,6 +61,13 @@ nav ul a:active  {
   background-color: #dfac20;
 }
 
+nav ul a:hover,
+nav ul a:active  {
+  color: #fffbf0;
+  background-color: #dfac20;
+}
+
+
 nav button {
   margin: 0 10px 10px;
 }
@@ -92,13 +99,23 @@ aside {
 footer {
   background: #e4ebf2;
   border-color: #8a9da8;
+  padding: 0px 10px;
+}
+
+#game {
+  height:35em;
+  position:relative;
 }
 
 #rndNum {
   color: #111111;
   font-size: 5em;
   visibility: hidden;
-  height:6em;
+  position: absolute;
+}
+
+#impressum {
+  display: none;
 }
 
 /* Formular ************************ */
@@ -123,37 +140,6 @@ legend {
 #hidetime {
     width: 5em;
 }
-/*
-dt {
-    font-weight: bold;
-    padding: 0 0 0.5em 3em;
-}
-
-dt:not(:first-of-type) {
-    margin: 2em 0 0 0;
-}
-
-dd {
-    margin: 0;
-    padding: 0;
-}
-
-dd ul {
-    list-style: none;
-    padding: 0;
-}
-
-dd li {
-    margin: 0;
-    padding: 0;
-}
-
-dd label:first-of-type {
-    display: inline-block;
-    text-align: right;
-    width: 8em;
-}
-*/
 
 #message {
     height: 5rem;
