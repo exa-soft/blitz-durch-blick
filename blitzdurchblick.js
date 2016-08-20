@@ -32,10 +32,14 @@ var BDB  = (function () {
   }
 
   /** Fills settings object with values from form */
-  function getValues ()
+  function getSettings ()
   {
-    // TODO parse value for game type (now only 0, hardcoded)
-    settings.gameType = 0;
+    if (document.getElementById("typeNumColor").checked)
+      settings.gameType = 1;
+    else if (document.getElementById("typeImages").checked)
+      settings.gameType = 2;
+    else
+      settings.gameType = 0;
     settings.numberLength = parseInt(document.getElementById("numLen").value);
     settings.amount = parseInt(document.getElementById("amount").value);
     settings.showRepeats = parseInt(document.getElementById("repeat").value);
@@ -133,7 +137,7 @@ var BDB  = (function () {
 
     startGame: function ()
     {
-      getValues ();
+      getSettings ();
 
       // get data and init loops
       status.toDisplay = BDBdata.initData (settings.gameType, settings.amount, settings.numberLength);
