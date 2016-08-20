@@ -18,7 +18,6 @@ var BDBdata  = (function () {
   {
     this.len = length;
     this.text = createRandomDigitString (length);
-    //window.alert ("new DispDataNumberBlack: length=" + this.len + ", text=" + this.text);
   }
 
   /*
@@ -37,6 +36,42 @@ var BDBdata  = (function () {
   };
 
 
+  /*--- data type for colored numbers (type = 1) ---------------*/
+
+  var colors = [ "red", "orange", "green", "blue", "magenta", "gray" ];
+
+  /*
+   * Constructor for numbers for the display.
+   */
+  function DispDataNumberColor (length)
+  {
+    this.len = length;
+    this.text = createRandomDigitString (length);
+    this.colors = [];
+    for (var i = 0; i < length; i++) {
+      this.colors[i] = createRandomColor ();
+    }
+  }
+
+  /*
+   * Display the number inside the given HTML element
+   */
+  DispDataNumberColor.prototype.displayMe = function (elem) {
+    elem.innerHTML = this.getHTML ();
+  };
+
+  /*
+   * Get HTML code for this element (to concatenate with more code before
+   * inserting it into some HTML element)
+   */
+  DispDataNumberColor.prototype.getHTML = function () {
+    var s = "";
+    for (var i = 0; i < this.len; i++)
+      s = s + '<span style="color:' + this.colors[i] + '">' + this.text[i] + '</span>';
+    return s;
+  };
+
+
   /*--- array to store the data to display (numbers or images) ---*/
 
   var dataForDisplay;
@@ -49,8 +84,7 @@ var BDBdata  = (function () {
         alert (text);
       break;
       case 1:   // numbers in color
-        text = "not yet implemented";
-        alert (text);
+        return new DispDataNumberColor (length);
       break;
       default:  // black numbers
         return new DispDataNumberBlack (length);
@@ -76,6 +110,14 @@ var BDBdata  = (function () {
     return s;
   }
 
+  function createRandomColor ()
+  {
+    // create a digit string (color is hex, but we want it a dark color,
+    // so we do not need colors with a-f anyway)
+    var index = rndInt (0, colors.length - 1);
+    return colors[index];
+  }
+
   /* *** public API **************/
 
   // Direkt das Object mit der öffentlichen Schnittstelle zurückgeben
@@ -96,7 +138,7 @@ var BDBdata  = (function () {
       if (dataObjArray.constructor === Array)
       {
         var s = "";
-        for (i = 0; i < dataObjArray.length; i++) {
+        for (var i = 0; i < dataObjArray.length; i++) {
           tmpString = dataObjArray[i].getHTML();
           //window.alert ("HTML for object is " + tmpString);
           s = s + tmpString + "<br />";
