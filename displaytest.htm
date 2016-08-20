@@ -28,9 +28,9 @@
 
   <nav>
     <ul>
-      <li><a href="#" onClick="BDB.displayIntroOnly()">Einführung</a></li>
-      <li><a href="#" onClick="BDB.displaySettingsOnly()">Einstellungen</a></li>
-      <li><a href="#" onClick="BDB.displayGameOnly()">Spielfläche</a></li>
+      <li><a href="#intro" onClick="BDB.displayIntroOnly()">Einführung</a></li>
+      <li><a href="#settings" onClick="BDB.displaySettingsOnly()">Einstellungen</a></li>
+      <li><a href="#game" onClick="BDB.displayGameOnly()">Spielfläche</a></li>
     </ul>
     <button type="button" id="startGame" onclick="BDB.startGame()">neues Spiel starten</button>
     <button type="button" id="solveGame" onclick="BDB.solveGame()" disabled>Lösung zeigen</button>
@@ -73,23 +73,26 @@
           <legend>Typ des Spiels</legend>
           <ul>
             <li>
-              <input type="radio" id="typeNumBlack" name="gameType" value="numbersBlack" checked="checked">
-              <label for="typeNumBlack">schwarze Zahlen</label>
-            </li>
-            <li>
-              <input type="radio" id="typeNumColor" name="gameType" value="numbersColor" disabled="disabled">
-              <label for="typeNumColor" disabled="disabled">farbige Zahlen</label>
-            </li>
-            <li>
-              <input type="radio" id="typeImages" name="gameType" value="images" disabled="disabled">
-              <label for="typeImages" disabled="disabled">Bilder</label>
+              <label for="typeNumBlack">
+                <input type="radio" id="typeNumBlack" name="gameType" value="numbersBlack" checked="checked">
+                schwarze Zahlen
+              </label>
+              <label for="typeNumColor" disabled="disabled">
+                <input type="radio" id="typeNumColor" name="gameType" value="numbersColor" disabled="disabled">
+                farbige Zahlen
+              </label>
+              <label for="typeImages" disabled="disabled">
+                <input type="radio" id="typeImages" name="gameType" value="images" disabled="disabled">
+                Bilder
+              </label>
             </li>
           </ul>
           <ul id="optForNum">
             <li>
-              <label for="numLen">Länge der Zahlen</label>
-              <input id="numLen" name="numLen" type="range" min="1" max="9" step="1" value="3">
-              <output name="numLenOut" for="numLen">3</output>
+              <label for="numLen">Länge der Zahlen
+                <input id="numLen" name="numLen" type="range" min="1" max="9" step="1" value="3">
+                <output name="numLenOut" for="numLen">3</output>
+              </label>
             </li>
           </ul>
         </fieldset>
@@ -98,30 +101,36 @@
           <legend>Schwierigkeit</legend>
           <ul>
             <li>
-              <label for="amount">Menge (verschiedene Zahlen/Bilder)</label>
-              <input id="amount" name="amount" type="range" min="1" max="15" step="1" value="2">
-              <output name="amountOut" for="amount">2</output>
+              <label for="amount">Menge (verschiedene Zahlen/Bilder)
+                <span>
+                  <input id="amount" name="amount" type="range" min="1" max="15" step="1" value="2">
+                  <output name="amountOut" for="amount">2</output>
+                </span>
+              </label>
+              <label for="amountChangeLoc">wechselnde Position
+                <input type="checkbox" id="dispChangeLoc" name="amountChangeLoc" value="move">
+              </label>
             </li>
             <li>
-              <label for="amountChangeLoc">wechselnde Position</label>
-              <input type="checkbox" id="dispChangeLoc" name="amountChangeLoc" value="move">
+              <label for="repeat">Anzahl Wiederholungen
+                <span>
+                  <input id="repeat" name="repeat" type="range" min="1" max="9" step="1" value="3">
+                  <output name="repeatOut" for="repeat">3</output>
+                </span>
+              </label>
+              <label for="repeatChangeLoc" disabled="disabled">wechselnde&nbsp;Position für&nbsp;jede&nbsp;Wiederholung
+                <input type="checkbox" id="repeatChangeLoc" name="repeatChangeLoc" value="move" disabled="disabled">
+              </label>
             </li>
             <li>
-              <label for="repeat">Anzahl Wiederholungen</label>
-              <input id="repeat" name="repeat" type="range" min="1" max="9" step="1" value="3">
-              <output name="repeatOut" for="repeat">3</output>
+              <label for="showtime">anzeigen für (Millisekunden)
+                <input id="showtime" name="showtime" type="number" min="10" max="10000" value="550">
+              </label>
             </li>
             <li>
-              <label for="repeatChangeLoc" disabled="disabled">wechselnde Position für jede Wiederholung</label>
-              <input type="checkbox" id="repeatChangeLoc" name="repeatChangeLoc" value="move" disabled="disabled">
-            </li>
-            <li>
-              <label for="showtime">anzeigen für (Millisekunden)</label>
-              <input id="showtime" name="showtime" type="number" min="10" max="10000" value="550">
-            </li>
-            <li>
-              <label for="hidetime">verstecken für (Millisekunden)</label>
-              <input id="hidetime" name="hidetime" type="number" min="10" max="5000" value="850">
+              <label for="hidetime">verstecken für (Millisekunden)
+                <input id="hidetime" name="hidetime" type="number" min="10" max="5000" value="850">
+              </label>
             </li>
           </ul>
         </fieldset>

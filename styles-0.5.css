@@ -67,15 +67,10 @@ nav ul a:active  {
   background-color: #dfac20;
 }
 
-
 nav button {
   margin: 0 10px 10px;
 }
 
-section, article#settings {
-  background: #ffede0;
-  border-color: #df6c20;
-}
 
 main {
   display: block;  /* für IE */
@@ -87,6 +82,11 @@ article {
   background: #F1F3F4;
   border-color: slateblue;
 
+}
+
+section, article#settings {
+  background: #ffede0;
+  border-color: #df6c20;
 }
 
 /*
@@ -155,9 +155,30 @@ input:disabled, label[disabled] {
     color: #999999;
 }
 
+#settings ul {
+  padding: 0;
+}
+
+#settings li {
+  clear: both;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+#settings label {
+  float: left;
+}
+
+#settings label, #settings input, #settings output {
+  vertical-align: bottom;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+
 /* andere Anzeige-Typen */
 
-@media (min-width: 45em)  { /* zweispaltiges Layout für breitere Viewports */
+@media (min-width: 60em)  { /* zweispaltiges Layout für breitere Viewports */
   nav {
     float: left;
     width: 15em;
