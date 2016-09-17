@@ -81,8 +81,8 @@
                 <input type="radio" id="typeNumColor" name="gameType" value="numbersColor">
                 farbige Zahlen
               </label>
-              <label for="typeImages" disabled="disabled">
-                <input type="radio" id="typeImages" name="gameType" value="images" disabled="disabled">
+              <label for="typeImages">
+                <input type="radio" id="typeImages" name="gameType" value="images">
                 Bilder
               </label>
             </li>
@@ -95,6 +95,14 @@
               </label>
             </li>
           </ul>
+          <ul id="optForImg" style="display:none">
+            <li>
+              <label for="imgPath">Pfad für die Bilder (innerhalb BlitzDurchBlick-Hauptordner)
+                &nbsp;&nbsp;&nbsp;Bilder/<input id="imgPath" type="text" value="Set1">
+              </label>
+            </li>
+          </ul>
+
         </fieldset>
 
         <fieldset>
@@ -151,7 +159,11 @@
     <!-- <a href="kontakt.html">Kontakt</a> -->
     <p>© 2016 by <a href="http://www.edith-birrer.ch">Edith Birrer</a> &mdash; <a href="#" onClick="BDB.toggleImpressum()">Impressum</a></p>
     <div id="impressum">
-      <p>Nach einer Idee von ...</p>
+      <p>Nach dem Programm "Tachoskopie", welches ich von Frau Stocker in Solothurn erhalten hatte und das von einem Optiker in Excel
+        programmiert worden war. Da es in den aktuellen Versionen von Excel nicht mehr richtig lief, ich aber trotzdem spielen wollte,
+        programmierte ich es kurzerhand in Javascript nach. Nun sollte es auf den meisten Betriebssystemen laufen und vielen Menschen
+        ermöglichen, ihren Blitz-Blick zu trainieren!
+      </p>
     </div>
   </footer>
 

@@ -1,0 +1,6 @@
+Dieses Verzeichnis nicht löschen!
+
+In dieses Verzeichnis (bzw. in Unterverzeichnisse darin) kannst du Bilder ablegen, die dann für den Spieltyp "Bilder" 
+benutzt werden. Am besten dafür geeignet sind ca. 150-200 Pixel grosse Icons, also kleine, einfache Bilder. 
+Das "Set1" enthält bereits einige Bilder, damit du gleich mit Spielen loslegen kannst.
+

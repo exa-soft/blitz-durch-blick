@@ -11,6 +11,11 @@ var BDB  = (function () {
     settings: null,
     btnSolve: null,
     impressum: null,
+    gameTypeNumBlack: null, // radio buttons for game type
+    gameTypeNumColor: null,
+    gameTypeImage: null,
+    optForNum: null,
+    optForImg: null,
   }
 
   var settings = {
@@ -22,6 +27,7 @@ var BDB  = (function () {
     repMove: false,    // changing position for each repetition
     showMs: 150,
     hideMs: 750,
+    imgPath: "",
   }
 
   var status = {
@@ -48,7 +54,10 @@ var BDB  = (function () {
 
     settings.objMove = document.getElementById("dispChangeLoc").checked;
     settings.repMove = document.getElementById("repeatChangeLoc").checked;
+
+    settings.imgPath = document.getElementById("imgPath").value;
   }
+
 
   /** Switches display and memory to next image (but does not set any timeouts). */
   function displayNext ()
@@ -105,6 +114,7 @@ var BDB  = (function () {
     elem.rndNum.style.visibility = "hidden";
   }
 
+
   /** set position of number (left and top are Strings like "50px") */
   function setNumberPosition (left, top) {
     elem.rndNum.style.left = left;
@@ -116,6 +126,23 @@ var BDB  = (function () {
     return "image: " + status.toDisplayIndex + "/" + settings.amount
       + ", rep: " + status.curRepeat + "/" + settings.showRepeats;
   }
+
+  // helper functions to attach an event (also works for older browsers like IE8)
+  function addEvent (obj, type, fn) {
+    if (obj.addEventListener)
+      obj.addEventListener (type, fn, false);
+    else if (obj.attachEvent)
+      obj.attachEvent ('on' + type, fn);
+  }
+
+  // helper functions to remove an event (also works for older browsers like IE8)
+  function removeEvent (obj, type, fn) {
+    if (obj.removeEventListener)
+      obj.removeEventListener (type, fn, false);
+    else if (obj.detachEvent)
+      obj.detachEvent ('on' + type, fn);
+  }
+
 
   // Direkt das Object mit der öffentlichen Schnittstelle zurückgeben
   return {
@@ -129,6 +156,15 @@ var BDB  = (function () {
 
       elem.btnSolve = document.getElementById("solveGame");
       elem.impressum = document.getElementById("impressum");
+
+      elem.gameTypeNumBlack = document.getElementById("typeNumBlack");
+      elem.gameTypeNumColor = document.getElementById("typeNumColor");
+      elem.gameTypeImage = document.getElementById("typeImages");
+      elem.optForNum = document.getElementById("optForNum");
+      elem.optForImg = document.getElementById("optForImg");
+      addEvent (elem.gameTypeNumBlack, 'click', BDB.displaySettingsForNumbers);
+      addEvent (elem.gameTypeNumColor, 'click', BDB.displaySettingsForNumbers);
+      addEvent (elem.gameTypeImage, 'click', BDB.displaySettingsForImages);
 
       status.imprOn = false;
 
@@ -195,6 +231,20 @@ var BDB  = (function () {
       else
         elem.impressum.style.display = "block";
       status.imprOn = !(status.imprOn);
+    },
+
+    /** display settings for numbers, hide settings for images */
+    displaySettingsForNumbers: function ()
+    {
+      elem.optForNum.style.display = 'block';
+      elem.optForImg.style.display = 'none';
+    },
+
+    /** display settings for images, hide settings for numbers */
+    displaySettingsForImages: function ()
+    {
+      elem.optForNum.style.display = 'none';
+      elem.optForImg.style.display = 'block';
     },
 
   };
