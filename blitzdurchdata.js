@@ -71,6 +71,34 @@ var BDBdata  = (function () {
     return s;
   };
 
+  /*--- data type for images (type = 2) ---------------*/
+
+  /*
+   * Constructor for images for the display.
+   */
+  function DispDataImage (basePath, imgNameArray)
+  {
+    window.alert ('array size is ' + imgNameArray.length);
+    var index = rndInt (0, imgNameArray.length - 1);
+    this.path = basePath + '/' + imgNameArray[index];
+    this.imgHtml = '<img src="' + path + img + '" alt = "">';
+  }
+
+  /*
+   * Display the image inside the given HTML element
+   */
+  DispDataImage.prototype.displayMe = function (elem) {
+    elem.innerHTML = this.imgHtml;
+  };
+
+  /*
+   * Get HTML code for this element (to concatenate with more code before
+   * inserting it into some HTML element)
+   */
+  DispDataImage.prototype.getHTML = function () {
+    return this.imgHtml;
+  };
+
 
   /*--- array to store the data to display (numbers or images) ---*/
 
