@@ -34,12 +34,11 @@ var BDB  = (function () {
     toDisplay: null,                  // will contain the objects (numbers/images) to display
     toDisplayIndex: -1,               // current image to display (count up)
     curRepeat: settings.showRepeats,   // countdown how many times to display
-    imprOn: false,
+    imprOn: false,  // do not display impressum
   }
 
   /** Fills settings object with values from form */
-  function getSettings ()
-  {
+  function getSettings () {
     if (document.getElementById("typeNumColor").checked)
       settings.gameType = 1;
     else if (document.getElementById("typeImages").checked)
@@ -58,9 +57,36 @@ var BDB  = (function () {
     settings.imgPath = document.getElementById("imgPath").value;
   }
 
-  function saveSettings ()
+  function setSettings () {
+    if (settings.gameType = 0)
+      document.getElementById("typeNumColor").checked = true;
+    else if (settings.gameType = 1)
+      document.getElementById("typeNumColor").checked = true;
+    else
+      document.getElementById("typeImages").checked;
+
+      /*
+    settings.numberLength = parseInt(document.getElementById("numLen").value);
+    settings.amount = parseInt(document.getElementById("amount").value);
+    settings.showRepeats = parseInt(document.getElementById("repeat").value);
+    settings.showMs = parseInt(document.getElementById("showtime").value);
+    settings.hideMs = parseInt(document.getElementById("hidetime").value);
+
+    settings.objMove = document.getElementById("dispChangeLoc").checked;
+    settings.repMove = document.getElementById("repeatChangeLoc").checked;
+
+    settings.imgPath = document.getElementById("imgPath").value;
+    */
+  }
+
+  function loadSettings ()
   {
-    localStorage.setItem('settings', JSON.stringify(settings));
+    var tmp = localStorage.getItem('settings');
+    if (tmp != null) {
+      settings = JSON.parse(tmp);
+      setSettings();
+    }
+    window.alert('Einstellungen wurden geladen')
   }
 
   /** Switches display and memory to next image (but does not set any timeouts). */
@@ -170,7 +196,14 @@ var BDB  = (function () {
       addEvent (elem.gameTypeNumColor, 'click', BDB.displaySettingsForNumbers);
       addEvent (elem.gameTypeImage, 'click', BDB.displaySettingsForImages);
 
+      addEvent (document.getElementById("saveSettings"), 'click', function () {
+        getSettings();
+        localStorage.setItem('settings', JSON.stringify(settings));
+        window.alert('Einstellungen wurden gespeichert')
+      });
+
       status.imprOn = false;
+      loadSettings ();
 
       return null;
     },
