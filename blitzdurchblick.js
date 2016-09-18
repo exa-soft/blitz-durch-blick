@@ -50,6 +50,11 @@ var BDB  = (function () {
     settings.repMove = document.getElementById("repeatChangeLoc").checked;
   }
 
+  function saveSettings ()
+  {
+    localStorage.setItem('settings', JSON.stringify(settings));
+  }
+
   /** Switches display and memory to next image (but does not set any timeouts). */
   function displayNext ()
   {
