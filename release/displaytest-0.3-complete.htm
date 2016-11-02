@@ -1,0 +1,733 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--[if lt IE 9]>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <![endif]-->
+
+  <title>BlitzDurchBlick - trainiere blitzschnelles optisches Erfassen</title>
+  <!--
+    <link rel="stylesheet" href="styles-0.5.css" type="text/css" />
+    <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon">
+    <link rel="help" title="Hilfe" href="help.htm">
+    <link rel="top" title="OptoGame" href="displaytest.htm">
+  -->
+  <link rel="author" title="Author: Edith Birrer" href="http://www.edith-birrer.ch">
+
+  <style>
+html {
+  box-sizing: border-box;
+}
+
+*, ::before, ::after {
+  box-sizing: inherit;
+}
+
+
+
+body {
+  margin: 10px auto;    // oder   margin: 0 auto;
+  min-width: 16em;
+  max-width: 80em;
+  font-family: sans-serif;
+  color: #333333;
+}
+
+/*header, nav, main, article, section, aside, footer {*/
+header, nav, main, article, section, footer {
+  /*border-radius: 0px 0.5em 0.5em;*/
+  border-radius: 0.5em;
+  border: 1px solid;
+  padding: 10px;
+  margin: 10px;
+}
+
+header {
+  background: #F1F3F4;
+  border-color: #d5d5d5;
+}
+
+nav {
+  font-size: 0.91em;
+  padding: 0;
+  background: #fffbf0;
+  border-color: #e7c157;
+  }
+nav ul, form ul {
+  padding:0;
+}
+
+nav li, form ul {
+  list-style: none;
+  margin: 0;
+  padding: 0.5em;
+}
+
+nav a {
+  display: block;
+  padding: 0.2em 10px;
+  font-weight: bold;
+  text-decoration: none;
+  background-color: #e7c157;
+  color: #333;
+}
+
+nav ul a:hover,
+nav ul a:active  {
+  color: #fffbf0;
+  background-color: #dfac20;
+}
+
+nav ul a:hover,
+nav ul a:active  {
+  color: #fffbf0;
+  background-color: #dfac20;
+}
+
+nav button {
+  margin: 0 10px 10px;
+}
+
+
+main {
+  display: block;  /* für IE */
+  background: #c4ced3;
+  border-color: #8a9da8;
+}
+
+article {
+  background: #F1F3F4;
+  border-color: slateblue;
+
+}
+
+section, article#settings {
+  background: #ffede0;
+  border-color: #df6c20;
+}
+
+/*
+aside {
+  background: #ebf5d7;
+  border-color: #8db243;
+}
+*/
+
+footer {
+  background: #e4ebf2;
+  border-color: #8a9da8;
+  padding: 0px 10px;
+}
+
+#game {
+  height:35em;
+  position:relative;
+}
+
+#rndNum {
+  color: #111111;
+  font-size: 5em;
+  visibility: hidden;
+  position: absolute;
+}
+
+#impressum {
+  display: none;
+}
+
+/* Formular ************************ */
+
+fieldset {
+    background: white;
+    border: 1px solid black;
+    border-radius: 0.5em;
+    margin: 0 0 1rem 0;
+}
+
+legend {
+    background: white;
+    border: 1px solid black;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0.5rem #888;
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+}
+
+#showtime,
+#hidetime {
+    width: 5em;
+}
+
+#message {
+    height: 5rem;
+    width: calc(100% - 1rem);
+}
+
+:invalid {
+    box-shadow: none; /* FF */
+    outline: 0;       /* IE */
+}
+
+input:disabled, label[disabled] {
+    color: #999999;
+}
+
+#settings ul {
+  padding: 0;
+}
+
+#settings li {
+  clear: both;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+#settings label {
+  float: left;
+}
+
+#settings label, #settings input, #settings output {
+  vertical-align: bottom;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+
+/* andere Anzeige-Typen */
+
+@media (min-width: 60em)  { /* zweispaltiges Layout für breitere Viewports */
+  nav {
+    float: left;
+    width: 15em;
+  }
+  main {
+    margin-left: 15em;
+  }
+}
+
+  </style>
+
+  <script type="text/javascript">
+
+var BDB  = (function () {
+  // Definiere eine Funktion mit einem Funktionsausdruck,
+  // durch runde Klammern umschlossen
+
+  var privateEigenschaft = "privat";
+
+  var elem = {
+    rndNum: null,
+    intro: null,
+    game: null,
+    settings: null,
+    btnSolve: null,
+    impressum: null,
+  }
+
+  var settings = {
+    gameType: 0,
+    numberLength: 3,
+    amount: 3,         // how many different numbers or images
+    showRepeats: 3,    // how many times show each number or image
+    objMove: false,    // changing position for each object
+    repMove: false,    // changing position for each repetition
+    showMs: 150,
+    hideMs: 750,
+  }
+
+  var status = {
+    toDisplay: null,                  // will contain the objects (numbers/images) to display
+    toDisplayIndex: -1,               // current image to display (count up)
+    curRepeat: settings.showRepeats,   // countdown how many times to display
+    imprOn: false,
+  }
+
+  /** Fills settings object with values from form */
+  function getSettings ()
+  {
+    if (document.getElementById("typeNumColor").checked)
+      settings.gameType = 1;
+    else if (document.getElementById("typeImages").checked)
+      settings.gameType = 2;
+    else
+      settings.gameType = 0;
+    settings.numberLength = parseInt(document.getElementById("numLen").value);
+    settings.amount = parseInt(document.getElementById("amount").value);
+    settings.showRepeats = parseInt(document.getElementById("repeat").value);
+    settings.showMs = parseInt(document.getElementById("showtime").value);
+    settings.hideMs = parseInt(document.getElementById("hidetime").value);
+
+    settings.objMove = document.getElementById("dispChangeLoc").checked;
+    settings.repMove = document.getElementById("repeatChangeLoc").checked;
+  }
+
+  /** Switches display and memory to next image (but does not set any timeouts). */
+  function displayNext ()
+  {
+    if (settings.objMove) {
+      // move next number/image to new position
+      var pos = BDBdata.getRandomPosition ();
+      //window.alert ("randomPosition: x=" + pos.x + ", y=" + pos.y);
+      setNumberPosition (pos.x, pos.y);
+    }
+
+    status.curRepeat = settings.showRepeats - 1;
+    status.toDisplayIndex = status.toDisplayIndex + 1;
+    status.toDisplay[status.toDisplayIndex].displayMe (elem.rndNum);
+  }
+
+  /** Manages the timeouts to show and hide the numbers or images. */
+  function blink ()
+  {
+    showNumberOff ();
+
+    // TODO work with settings.repMove ==> set new position
+
+    var t1Time = settings.hideMs;
+    var t2Time = settings.hideMs + settings.showMs;
+    if (status.curRepeat > 0)
+    {
+      status.curRepeat = status.curRepeat - 1;
+      var t1 = setTimeout(showNumberOn, t1Time);
+      var t2 = setTimeout(blink, t2Time);
+    }
+    else if (status.toDisplayIndex < settings.amount - 1)
+    {
+      // status.curRepeat == 0 ==> switch to next image
+      // status.toDisplayIndex < settings.amount ==> there is a next image
+      displayNext ();
+      var t1 = setTimeout(showNumberOn, t1Time);
+      var t2 = setTimeout(blink, t2Time);
+    }
+    else {
+      // this was the last repeat of the last image, nothing more to display
+      // enable solution button
+      elem.btnSolve.removeAttribute('disabled');
+    }
+  }
+
+  function showNumberOn ()
+  {
+    elem.rndNum.style.visibility = "visible";
+  }
+
+  function showNumberOff ()
+  {
+    elem.rndNum.style.visibility = "hidden";
+  }
+
+  /** set position of number (left and top are Strings like "50px") */
+  function setNumberPosition (left, top) {
+    elem.rndNum.style.left = left;
+    elem.rndNum.style.top = top;
+  }
+
+  /** debug function */
+  function getRepeatStatusString () {
+    return "image: " + status.toDisplayIndex + "/" + settings.amount
+      + ", rep: " + status.curRepeat + "/" + settings.showRepeats;
+  }
+
+  // Direkt das Object mit der öffentlichen Schnittstelle zurückgeben
+  return {
+
+    init: function ()
+    {
+      elem.rndNum = document.getElementById("rndNum");
+      elem.intro = document.getElementById("intro");
+      elem.game = document.getElementById("game");
+      elem.settings = document.getElementById("settings");
+
+      elem.btnSolve = document.getElementById("solveGame");
+      elem.impressum = document.getElementById("impressum");
+
+      status.imprOn = false;
+
+      return null;
+    },
+
+    startGame: function ()
+    {
+      getSettings ();
+
+      // get data and init loops
+      status.toDisplay = BDBdata.initData (settings.gameType, settings.amount, settings.numberLength);
+      status.toDisplayIndex = -1;   // because we will call displayNext to start
+
+      // switch screen
+      BDB.displayGameOnly ();
+      elem.rndNum.style.display = "block";
+      elem.rndNum.style.visibility = "visible";
+      elem.btnSolve.setAttribute('disabled','disabled');
+
+      // start displaying
+      displayNext ();
+      // The repetition counter in the blink method assumes that currently
+      // an image is being displayed. As this is not the case just now,
+      // the first image would be displayed one repetition short.
+      // So to force one more repetition, we increase curRepeat:
+      status.curRepeat = status.curRepeat + 1;
+      blink ();
+    },
+
+    solveGame: function ()
+    {
+      BDB.displayGameOnly ();
+      setNumberPosition ("10px", "10px");
+      BDBdata.displayInElement (elem.rndNum, status.toDisplay);
+      showNumberOn ();
+    },
+
+    displayIntroOnly: function ()
+    {
+      elem.intro.style.display = "block";
+      elem.settings.style.display = "none";
+      elem.game.style.display = "none";
+    },
+
+    displaySettingsOnly: function ()
+    {
+      elem.intro.style.display = "none";
+      elem.settings.style.display = "block";
+      elem.game.style.display = "none";
+    },
+
+    displayGameOnly: function ()
+    {
+      elem.intro.style.display = "none";
+      elem.settings.style.display = "none";
+      elem.game.style.display = "block";
+    },
+
+    toggleImpressum: function ()
+    {
+      if (status.imprOn)
+        elem.impressum.style.display = "none";
+      else
+        elem.impressum.style.display = "block";
+      status.imprOn = !(status.imprOn);
+    },
+
+  };
+})();
+
+var BDBdata  = (function () {
+  // Definiere eine Funktion mit einem Funktionsausdruck,
+  // durch runde Klammern umschlossen
+
+  /* data types:
+   * type 0: black numbers
+   * type 1: numbers in color
+   * type 2: images
+   */
+
+
+  /*--- data type for black numbers (type = 0) ---------------*/
+
+  /*
+   * Constructor for numbers for the display.
+   */
+  function DispDataNumberBlack (length)
+  {
+    this.len = length;
+    this.text = createRandomDigitString (length);
+  }
+
+  /*
+   * Display the number inside the given HTML element
+   */
+  DispDataNumberBlack.prototype.displayMe = function (elem) {
+    elem.innerHTML = this.text;
+  };
+
+  /*
+   * Get HTML code for this element (to concatenate with more code before
+   * inserting it into some HTML element)
+   */
+  DispDataNumberBlack.prototype.getHTML = function () {
+    return this.text;
+  };
+
+
+  /*--- data type for colored numbers (type = 1) ---------------*/
+
+  var colors = [ "red", "orange", "green", "blue", "magenta", "gray" ];
+
+  /*
+   * Constructor for numbers for the display.
+   */
+  function DispDataNumberColor (length)
+  {
+    this.len = length;
+    this.text = createRandomDigitString (length);
+    this.colors = [];
+    for (var i = 0; i < length; i++) {
+      this.colors[i] = createRandomColor ();
+    }
+  }
+
+  /*
+   * Display the number inside the given HTML element
+   */
+  DispDataNumberColor.prototype.displayMe = function (elem) {
+    elem.innerHTML = this.getHTML ();
+  };
+
+  /*
+   * Get HTML code for this element (to concatenate with more code before
+   * inserting it into some HTML element)
+   */
+  DispDataNumberColor.prototype.getHTML = function () {
+    var s = "";
+    for (var i = 0; i < this.len; i++)
+      s = s + '<span style="color:' + this.colors[i] + '">' + this.text[i] + '</span>';
+    return s;
+  };
+
+
+  /*--- array to store the data to display (numbers or images) ---*/
+
+  var dataForDisplay;
+
+  function createDataObject (type, length)
+  {
+    switch (type) {
+      case 2:   // images
+        text = "not yet implemented";
+        alert (text);
+      break;
+      case 1:   // numbers in color
+        return new DispDataNumberColor (length);
+      break;
+      default:  // black numbers
+        return new DispDataNumberBlack (length);
+      break;
+    }
+    return null;
+  }
+
+  /* --- helper functions --- */
+
+  function rndInt (min, max)
+  {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function createRandomDigitString (length)
+  {
+    var s = "";
+    for (var i = 0; i < length; i++)
+    {
+      s = s + (rndInt (0, 9)).toString();
+    };
+    return s;
+  }
+
+  function createRandomColor ()
+  {
+    // create a digit string (color is hex, but we want it a dark color,
+    // so we do not need colors with a-f anyway)
+    var index = rndInt (0, colors.length - 1);
+    return colors[index];
+  }
+
+  /* *** public API **************/
+
+  // Direkt das Object mit der öffentlichen Schnittstelle zurückgeben
+  return {
+
+    initData: function (type, amount, length)
+    {
+      //window.alert ("will create data for type " + type + ", amount " + amount + ", length " + length);
+      dataForDisplay = [];
+      for (var i = 0; i < amount; i++) {
+        dataForDisplay[i] = createDataObject (type, length);
+      }
+      return dataForDisplay;
+    },
+
+    displayInElement: function (elem, dataObjArray)
+    {
+      if (dataObjArray.constructor === Array)
+      {
+        var s = "";
+        for (var i = 0; i < dataObjArray.length; i++) {
+          tmpString = dataObjArray[i].getHTML();
+          //window.alert ("HTML for object is " + tmpString);
+          s = s + tmpString + "<br />";
+        }
+        //window.alert ("HTML is: " + s);
+        elem.innerHTML = s;
+      }
+      else
+        elem.innerHTML = "ERROR: dataObjArray is not an array ('" + dataObjArray + "')";
+    },
+
+    /** return a position object (x, y) with Strings (like "50px") */
+    getRandomPosition: function ()
+    {
+      var pos = {
+        x: (rndInt (0, 300)).toString() + "px",
+        y: (rndInt (0, 400)).toString() + "px"
+      }
+      return pos;
+    },
+
+  };
+})();
+  
+  </script>
+
+</head>
+<body>
+
+  <header>
+    <img src="logo.svg" alt="logo">
+    <h1>BlitzDurchBlick</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#intro" onClick="BDB.displayIntroOnly()">Einführung</a></li>
+      <li><a href="#settings" onClick="BDB.displaySettingsOnly()">Einstellungen</a></li>
+      <li><a href="#game" onClick="BDB.displayGameOnly()">Spielfläche</a></li>
+    </ul>
+    <button type="button" id="startGame" onclick="BDB.startGame()">neues Spiel starten</button>
+    <button type="button" id="solveGame" onclick="BDB.solveGame()" disabled>Lösung zeigen</button>
+  </nav>
+
+  <main>
+    <article id="intro">
+      <h2>Einführung</h2>
+      <p>
+        Diese Seite hilft dir, deine Augen schneller zu machen. Wenn du etwas schneller erfassen kannst,
+        ist es auch weniger anstrengend. Du siehst also mehr und einfacher!
+      </p>
+      <p>
+        Das Spiel wird dir für kurze Augenblicke Zahlen oder Bilder zeigen, die du dir merken und
+        danach aufschreiben sollst.
+        In den Einstellungen kannst du angeben, wieviele verschiedene Zahlen oder Bilder gezeigt werden sollen,
+        wie oft und wie lange sie angezeigt sein sollen und wie lange die Pausen dazwischen sein sollen.
+      </p>
+      <p>
+        Am Ende kannst du dir die gezeigten Zahlen oder Bilder nochmals in Ruhe ansehen. So kannst du
+        kontrollieren, ob du schon schnell genug den Durchblick hast!
+      </p>
+    </article>
+
+    <article id="game" style="display:none">
+      <!--<h2>Spielfläche</h2>-->
+      <div id="rndNum">
+        135
+      </div>
+    </article>
+
+    <article id="settings" style="display:none">
+      <h2>Einstellungen</h2>
+      <form action="#"
+        oninput="repeatOut.value=parseInt(repeat.value);
+        numLenOut.value=parseInt(numLen.value);
+        amountOut.value=parseInt(amount.value); "
+      >
+        <fieldset>
+          <legend>Typ des Spiels</legend>
+          <ul>
+            <li>
+              <label for="typeNumBlack">
+                <input type="radio" id="typeNumBlack" name="gameType" value="numbersBlack" checked="checked">
+                schwarze Zahlen
+              </label>
+              <label for="typeNumColor">
+                <input type="radio" id="typeNumColor" name="gameType" value="numbersColor">
+                farbige Zahlen
+              </label>
+              <label for="typeImages" disabled="disabled">
+                <input type="radio" id="typeImages" name="gameType" value="images" disabled="disabled">
+                Bilder
+              </label>
+            </li>
+          </ul>
+          <ul id="optForNum">
+            <li>
+              <label for="numLen">Länge der Zahlen
+                <input id="numLen" name="numLen" type="range" min="1" max="9" step="1" value="3">
+                <output name="numLenOut" for="numLen">3</output>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+
+        <fieldset>
+          <legend>Schwierigkeit</legend>
+          <ul>
+            <li>
+              <label for="amount">Menge (verschiedene Zahlen/Bilder)
+                <span>
+                  <input id="amount" name="amount" type="range" min="1" max="15" step="1" value="2">
+                  <output name="amountOut" for="amount">2</output>
+                </span>
+              </label>
+              <label for="amountChangeLoc">wechselnde Position
+                <input type="checkbox" id="dispChangeLoc" name="amountChangeLoc" value="move">
+              </label>
+            </li>
+            <li>
+              <label for="repeat">Anzahl Wiederholungen
+                <span>
+                  <input id="repeat" name="repeat" type="range" min="1" max="9" step="1" value="3">
+                  <output name="repeatOut" for="repeat">3</output>
+                </span>
+              </label>
+              <label for="repeatChangeLoc" disabled="disabled">wechselnde&nbsp;Position für&nbsp;jede&nbsp;Wiederholung
+                <input type="checkbox" id="repeatChangeLoc" name="repeatChangeLoc" value="move" disabled="disabled">
+              </label>
+            </li>
+            <li>
+              <label for="showtime">anzeigen für (Millisekunden)
+                <input id="showtime" name="showtime" type="number" min="10" max="10000" value="550">
+              </label>
+            </li>
+            <li>
+              <label for="hidetime">verstecken für (Millisekunden)
+                <input id="hidetime" name="hidetime" type="number" min="10" max="5000" value="850">
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+
+      </form>
+
+    </article>
+
+    <!--
+    <aside>
+      <section>
+      </section>
+    </aside>
+    -->
+  </main>
+
+  <footer>
+    <!-- <a href="kontakt.html">Kontakt</a> -->
+    <p>© 2016 by <a href="http://www.edith-birrer.ch">Edith Birrer</a> &mdash; <a href="#" onClick="BDB.toggleImpressum()">Impressum</a></p>
+    <div id="impressum">
+      <p>Nach einer Idee von ...</p>
+    </div>
+  </footer>
+
+  <noscript>
+    <h1>BlitzDurchBlick kann nicht benutzt werden</h1>
+    <p>In Ihrem Browser ist JavaScript deaktiviert.</p>
+    <p>Diese Seite benutzt JavaScript zur Darstellung der Zahlen und Bilder, wie in der <a href="help.htm">Hilfe</a> beschrieben. Ohne JavaScript ist sie nicht nutzbar.</p>
+    <p>Im SELFHTML-Wiki erfahren Sie, <a href="https://wiki.selfhtml.org/wiki/JavaScript/Tutorials/JavaScript_aktivieren"> wie Sie JavaScript in Ihrem Browser aktivieren können. </a> </p>
+  </noscript>
+
+  <script>
+    //BDB.öffentlicheMethode1();
+    BDB.init();
+  </script>
+
+</body>
+</html>

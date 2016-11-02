@@ -1,4 +1,4 @@
-var BDB  = (function () {
+﻿var BDB  = (function () {
   // Definiere eine Funktion mit einem Funktionsausdruck,
   // durch runde Klammern umschlossen
 
@@ -201,8 +201,3 @@ var BDB  = (function () {
 })();
 // Ende des eingeklammerten Funktionsausdrucks, dahinter
 // direkt () zum Aufruf der soeben definierten Funktion
-
-//BDB.öffentlicheMethode1();
-
-// Ergibt undefined, weil von außen nicht sichtbar:
-//window.alert("Container.privateMethode von außerhalb: " + BDB.privateMethode);
